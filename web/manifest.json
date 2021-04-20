@@ -1,6 +1,6 @@
 {
-    "name": "spendings_app_2",
-    "short_name": "spendings_app_2",
+    "name": "chat_app",
+    "short_name": "chat_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

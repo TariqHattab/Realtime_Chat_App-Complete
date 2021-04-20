@@ -1,4 +1,4 @@
-# spendings_app_2
+# chat_app
 
 A new Flutter project.
 
