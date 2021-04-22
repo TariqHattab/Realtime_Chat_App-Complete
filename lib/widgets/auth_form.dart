@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
   final Function _submitAuthForm;
+  final bool _isLoading;
   const AuthForm(
-    this._submitAuthForm, {
+    this._submitAuthForm,
+    this._isLoading, {
     Key key,
   }) : super(key: key);
 
@@ -34,7 +36,7 @@ class _AuthFormState extends State<AuthForm> {
     _formKey.currentState.save();
 
     print(_formData);
-    widget._submitAuthForm(_formData, _isLogin);
+    widget._submitAuthForm(_formData, _isLogin, context);
   }
 
   @override
@@ -62,7 +64,7 @@ class _AuthFormState extends State<AuthForm> {
                           return null;
                         },
                         onSaved: (value) {
-                          _formData['email'] = value;
+                          _formData['email'] = value.trim();
                         },
                       ),
                       if (!_isLogin)
@@ -76,7 +78,7 @@ class _AuthFormState extends State<AuthForm> {
                             return null;
                           },
                           onSaved: (value) {
-                            _formData['username'] = value;
+                            _formData['username'] = value.trim();
                           },
                         ),
                       TextFormField(
@@ -90,30 +92,36 @@ class _AuthFormState extends State<AuthForm> {
                           return null;
                         },
                         onSaved: (value) {
-                          _formData['password'] = value;
+                          _formData['password'] = value.trim();
                         },
                       ),
                       SizedBox(
                         height: 12,
                       ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            shape: Theme.of(context).buttonTheme.shape),
-                        child: Text(_isLogin ? 'Login' : 'Signup'),
-                        onPressed: () {
-                          _onSave();
-                        },
-                      ),
-                      TextButton(
-                        child: Text(_isLogin
-                            ? 'Create new account'
-                            : 'Already have an account'),
-                        onPressed: () {
-                          setState(() {
-                            _isLogin = !_isLogin;
-                          });
-                        },
-                      )
+                      if (widget._isLoading)
+                        Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      if (!widget._isLoading)
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              shape: Theme.of(context).buttonTheme.shape),
+                          child: Text(_isLogin ? 'Login' : 'Signup'),
+                          onPressed: () {
+                            _onSave();
+                          },
+                        ),
+                      if (!widget._isLoading)
+                        TextButton(
+                          child: Text(_isLogin
+                              ? 'Create new account'
+                              : 'Already have an account'),
+                          onPressed: () {
+                            setState(() {
+                              _isLogin = !_isLogin;
+                            });
+                          },
+                        )
                     ],
                   ),
                 ))),
