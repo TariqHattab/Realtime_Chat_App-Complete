@@ -1,3 +1,4 @@
+import 'package:chat_app/widgets/user_image.dart';
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
@@ -53,6 +54,7 @@ class _AuthFormState extends State<AuthForm> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      UserImage(),
                       TextFormField(
                         key: ValueKey('email'),
                         keyboardType: TextInputType.emailAddress,
