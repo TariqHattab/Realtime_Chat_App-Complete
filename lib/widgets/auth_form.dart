@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chat_app/widgets/user_image.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +24,10 @@ class _AuthFormState extends State<AuthForm> {
     'password': '',
   };
   var _isLogin = true;
+  File _pickedImage;
+  void _choosenImage(File choosenImage) {
+    _pickedImage = choosenImage;
+  }
 
   @override
   void initState() {
@@ -33,11 +39,20 @@ class _AuthFormState extends State<AuthForm> {
     if (!_formKey.currentState.validate()) {
       return;
     }
+    if (!_isLogin && _pickedImage == null) {
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Pick an image'),
+          backgroundColor: Theme.of(context).errorColor,
+        ),
+      );
+      return;
+    }
     FocusScope.of(context).unfocus();
     _formKey.currentState.save();
 
     print(_formData);
-    widget._submitAuthForm(_formData, _isLogin, context);
+    widget._submitAuthForm(_formData, _pickedImage, _isLogin, context);
   }
 
   @override
@@ -54,7 +69,10 @@ class _AuthFormState extends State<AuthForm> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      UserImage(),
+                      if (!_isLogin)
+                        UserImage(
+                          choosenImagefn: _choosenImage,
+                        ),
                       TextFormField(
                         key: ValueKey('email'),
                         keyboardType: TextInputType.emailAddress,
