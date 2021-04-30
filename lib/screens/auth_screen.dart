@@ -18,7 +18,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   void _submitAuthForm(
       Map userData, File imageFile, bool isLogin, BuildContext ctx) async {
-    AuthResult authResult;
+    UserCredential authResult;
     try {
       setState(() {
         _isLoading = true;
@@ -39,13 +39,13 @@ class _AuthScreenState extends State<AuthScreen> {
           .child('user_image')
           .child(authResult.user.uid + '.jpg');
 
-      await ref.putFile(imageFile).onComplete;
+      await ref.putFile(imageFile);
       final url = await ref.getDownloadURL();
 
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection('users')
-          .document(authResult.user.uid)
-          .setData({
+          .doc(authResult.user.uid)
+          .set({
         'username': userData['username'],
         'email': userData['email'],
         'image_url': url,
@@ -55,7 +55,7 @@ class _AuthScreenState extends State<AuthScreen> {
       if (e.message != null) {
         message = e.message;
       }
-      Scaffold.of(ctx).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
         content: Text(message),
         backgroundColor: Theme.of(ctx).errorColor,
       ));

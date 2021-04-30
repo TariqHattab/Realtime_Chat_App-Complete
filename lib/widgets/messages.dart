@@ -6,44 +6,30 @@ import 'package:flutter/material.dart';
 class Messages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: FirebaseAuth.instance.currentUser(),
-      builder: (ctx, snapshotUser) {
-        if (snapshotUser.connectionState == ConnectionState.waiting) {
+    final user = FirebaseAuth.instance.currentUser;
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection('chat')
+          .orderBy('createdAt', descending: true)
+          .snapshots(),
+      builder: (ctx, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+        if (streamSnapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(),
           );
         }
-        return StreamBuilder(
-          stream: Firestore.instance
-              .collection('chat')
-              .orderBy('createdAt', descending: true)
-              .snapshots(),
-          builder: (ctx, streamSnapshot) {
-            if (streamSnapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            var documents = streamSnapshot.data.documents;
-            // print(documents[0].documentID);
-            // if (documents[0] == null) {
-            //   return Center(
-            //     child: Text('The chat is empity'),
-            //   );
-            // }
-            return ListView.builder(
-              reverse: true,
-              itemCount: documents.length,
-              itemBuilder: (ctx, index) => BubbleMessage(
-                message: documents[index]['text'],
-                isMe: documents[index]['userId'] == snapshotUser.data.uid,
-                key: ValueKey(documents[index].documentID),
-                username: documents[index]['username'],
-                userImageUrl: documents[index]['userImage'],
-              ),
-            );
-          },
+        var documents = streamSnapshot.data.docs;
+
+        return ListView.builder(
+          reverse: true,
+          itemCount: documents.length,
+          itemBuilder: (ctx, index) => BubbleMessage(
+            message: documents[index].data()['text'],
+            isMe: documents[index].data()['userId'] == user.uid,
+            username: documents[index].data()['username'],
+            userImageUrl: documents[index].data()['userImage'],
+            key: ValueKey(documents[index].id),
+          ),
         );
       },
     );

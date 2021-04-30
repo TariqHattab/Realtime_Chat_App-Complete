@@ -12,7 +12,7 @@ class BubbleMessage extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Stack(overflow: Overflow.visible, children: [
+    return Stack(clipBehavior: Clip.none, children: [
       Row(
           mainAxisAlignment:
               isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
