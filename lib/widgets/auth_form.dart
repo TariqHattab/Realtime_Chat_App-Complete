@@ -31,7 +31,6 @@ class _AuthFormState extends State<AuthForm> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -40,7 +39,8 @@ class _AuthFormState extends State<AuthForm> {
       return;
     }
     if (!_isLogin && _pickedImage == null) {
-      Scaffold.of(context).showSnackBar(
+      // ignore: deprecated_member_use
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Pick an image'),
           backgroundColor: Theme.of(context).errorColor,

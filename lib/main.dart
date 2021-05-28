@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
       future: _initialization,
       builder: (context, appSnapshot) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'FlutterChat',
           theme: ThemeData(
             primarySwatch: Colors.pink,
